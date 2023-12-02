@@ -1,42 +1,5 @@
 library(tidyverse)
 
-# trial
-raw_t <- "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
-Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
-Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
-Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
-Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
-
-df <- read_delim(raw_t, col_names = c("game","trial"), delim = ":") |>
-  mutate(game = row_number(),
-         trial2 = str_split(trial, ";")) |> 
-  select(-trial) |>
-  unnest(cols = c(trial2)) 
-
-df_new <- tibble(game=as.numeric(), blue=as.numeric(), green=as.numeric(), red=as.numeric())
-
-for (i in 1:nrow(df)) {
-  red <- str_extract(df[[i,"trial2"]], "[0-9]+ (?=red)") |> str_trim() |> as.numeric()
-  green <- str_extract(df[[i,"trial2"]], "[0-9]+ (?=green)") |> str_trim() |> as.numeric()
-  blue <- str_extract(df[[i,"trial2"]], "[0-9]+ (?=blue)") |> str_trim() |> as.numeric()
-  
-  df_new <- df_new |>
-    add_row(tibble(game=df[[i,"game"]],blue=blue,green=green,red=red))
-  
-}
-
-red_max <- 12
-green_max <- 13
-blue_max <- 14
-
-df_new |>
-  mutate(blue_max = blue <= blue_max,
-         red_max = red <= red_max,
-         green_max = green <= green_max) |>
-  filter(!blue_max | !red_max | !green_max) |> 
-  distinct(game)
-
-
 ## real part 1
 raw <- read_file("aoc2.txt")
 
