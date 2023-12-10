@@ -85,3 +85,6 @@ for (i in 1:201) {
   }
   print(i)
 }
+
+nrow(df)
+
